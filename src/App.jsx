@@ -42,7 +42,9 @@ export default function App() {
     setMessage('Имэйл хаягаа оруулна уу.');
     return;
   }
-  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: window.location.origin
+});
   if (error) setMessage(error.message);
   else setMessage('Нууц үг сэргээх холбоос имэйлээр илгээгдлээ.');
 } 
