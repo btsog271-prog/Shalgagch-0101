@@ -25,13 +25,12 @@ export default function App() {
   useEffect(() => {
     if (!supabase) return;
     supabase.auth.getSession().then(({data}) => setSession(data.session));
-    supabase.auth.onAuthStateChange((event,s) => {
+   const {data:{subscription}} = supabase.auth.onAuthStateChange((event,s) => {
   setSession(s);
   if (event === 'PASSWORD_RECOVERY') {
     setRecovery(true);
   }
-});
-    return () => subscription.unsubscribe();
+}); turn () => subscription.unsubscribe();
   },[]);
   useEffect(() => { if(session) loadProfile(); else {setProfile(null);setCourses([]);} },[session]);
   async function loadProfile() {
