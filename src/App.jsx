@@ -101,7 +101,11 @@ export default function App() {
   setLoading(false);
 }
 }
-
+async function logout() {
+  await supabase.auth.signOut();
+  setRecovery(false);
+  setMessage('');
+}
 async function openCourse(course) {
     if(!course.file_path) {setMessage('Энэ хичээлд материалын файл хараахан холбогдоогүй байна.');return;}
     const {data,error} = await supabase.storage.from('training-materials').createSignedUrl(course.file_path,3600);
