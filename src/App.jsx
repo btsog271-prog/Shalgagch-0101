@@ -63,10 +63,12 @@ export default function App() {
 } catch(err) {
   setMessage(err.message || 'Алдаа гарлаа');
 }
-finally {
+    finally {
   setLoading(false);
 }
-  async function openCourse(course) {
+}
+
+async function openCourse(course) {
     if(!course.file_path) {setMessage('Энэ хичээлд материалын файл хараахан холбогдоогүй байна.');return;}
     const {data,error} = await supabase.storage.from('training-materials').createSignedUrl(course.file_path,3600);
     if(error) setMessage(error.message); else window.open(data.signedUrl,'_blank','noopener,noreferrer');
