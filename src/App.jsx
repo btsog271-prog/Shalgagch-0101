@@ -30,7 +30,7 @@ export default function App() {
   if (event === 'PASSWORD_RECOVERY') {
     setRecovery(true);
   }
-}); turn () => subscription.unsubscribe();
+}); return () => subscription.unsubscribe();
   },[]);
   useEffect(() => { if(session) loadProfile(); else {setProfile(null);setCourses([]);} },[session]);
   async function loadProfile() {
