@@ -38,31 +38,34 @@ export default function App() {
     e.preventDefault(); setLoading(true); setMessage('');
     try {
       if(mode==='register') {
-        const {data,error} = await supabase.auth.signUp({email,password});
-        if(error) throw error;
-if(data.user && data.session) {
-  const { error: pe } = await supabase
-    .from('Profiles')
-    .insert({
-      user_id: data.user.id,
-      Full_name: fullName,
-      phone: phone,
-      role: 'student'
-    });
-  if(pe) throw pe;
-} else if(data.user) {
-  alert('Бүртгэл үүслээ. Имэйлээ шалгаж баталгаажуулна уу.');
-}
-        }
-        setMessage('Бүртгэл амжилттай. Имэйл баталгаажуулах шаардлагатай бол имэйлээ шалгаарай.');
-      } else {
-        const {error} = await supabase.auth.signInWithPassword({email,password});
-        if(error) throw error;
-      }
-    } catch(err) { setMessage(err.message || 'Алдаа гарлаа'); }
-    finally {setLoading(false);}
+  const {data,error} = await supabase.auth.signUp({email,password});
+  if(error) throw error;
+
+  if(data.user && data.session) {
+    const { error: pe } = await supabase
+      .from('Profiles')
+      .insert({
+        user_id: data.user.id,
+        Full_name: fullName,
+        phone: phone,
+        role: 'student'
+      });
+    if(pe) throw pe;
+  } else if(data.user) {
+    alert('Бүртгэл үүслээ. Имэйлээ шалгаж баталгаажуулна уу.');
   }
-  async function logout(){await supabase.auth.signOut();setMessage('');}
+
+  setMessage('Бүртгэл амжилттай. Имэйлээ шалгаарай.');
+} else {
+  const {error} = await supabase.auth.signInWithPassword({email,password});
+  if(error) throw error;
+}
+} catch(err) {
+  setMessage(err.message || 'Алдаа гарлаа');
+}
+finally {
+  setLoading(false);
+}
   async function openCourse(course) {
     if(!course.file_path) {setMessage('Энэ хичээлд материалын файл хараахан холбогдоогүй байна.');return;}
     const {data,error} = await supabase.storage.from('training-materials').createSignedUrl(course.file_path,3600);
