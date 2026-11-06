@@ -89,5 +89,3 @@ async function openCourse(course) {
     {message&&session&&<div className="toast" onClick={()=>setMessage('')}>{message}　×</div>}
   </div>;
 }
-
-export default App;
