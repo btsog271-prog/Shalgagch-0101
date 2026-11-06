@@ -41,6 +41,22 @@ export default function App() {
     const {data:cs,error:ce} = await supabase.from('courses').select('id,title,description,file_path,created_at').order('created_at',{ascending:false});
     if(ce) setMessage('Хичээл уншихад алдаа: '+ce.message); else setCourses(cs||[]);
   }
+  async function updatePassword(e) {
+  e.preventDefault();
+  setLoading(true);
+  const { error } = await supabase.auth.updateUser({
+    password: newPassword
+  });
+  setLoading(false);
+
+  if (error) {
+    setMessage(error.message);
+  } else {
+    setRecovery(false);
+    setNewPassword('');
+    setMessage('Нууц үг амжилттай шинэчлэгдлээ.');
+  }
+}
   async function authenticate(e) {
    async function sendRecovery() {
   if (!email) {
