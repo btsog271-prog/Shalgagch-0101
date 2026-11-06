@@ -110,7 +110,16 @@ async function openCourse(course) {
   if(!configured) return <main className="setup"><div className="brand"><ShieldCheck size={38}/><span>Шалгагч-0101</span></div><h1>Сургалтын платформын тохиргоо</h1><p>Supabase холболтын мэдээллийг Netlify-д оруулсны дараа сайт ажиллана.</p><p>Шаардлагатай хувьсагч: <b>VITE_SUPABASE_URL</b> болон <b>VITE_SUPABASE_ANON_KEY</b>.</p><small>Supabase-ийн service_role түлхүүрийг энд эсвэл GitHub-д хэзээ ч бүү оруулаарай.</small></main>;
   return <div className="app">
     <header><div className="brand"><ShieldCheck size={34}/><div><b>Шалгагч-0101</b><small>МЭДЛЭГ • САХИЛГА • МЭРГЭШИЛ</small></div></div>{session&&<button className="out" onClick={logout}><LogOut size={17}/> Гарах</button>}</header>
-    {!session ? <main className="auth"><div className="emblem"><ShieldCheck size={42}/></div><h1>{mode==='login'?'Системд нэвтрэх':'Шинэ хэрэглэгчийн бүртгэл'}</h1><p>Хилчин шалгагчийн сургалтын цахим платформ</p><form onSubmit={authenticate}>
+    {recovery ? <main className="auth">
+  <h1>Шинэ нууц үг тохируулах</h1>
+  <form onSubmit={updatePassword}>
+    <label>Шинэ нууц үг
+      <input type="password" minLength="6" required value={newPassword} onChange={e=>setNewPassword(e.target.value)} placeholder="Шинэ нууц үгээ оруулна уу"/>
+    </label>
+    <button className="primary" disabled={loading}>Нууц үг шинэчлэх</button>
+  </form>
+  {message&&<p className="notice">{message}</p>}
+</main> : !session ? <main className="auth"><div className="emblem"><ShieldCheck size={42}/></div><h1>{mode==='login'?'Системд нэвтрэх':'Шинэ хэрэглэгчийн бүртгэл'}</h1><p>Хилчин шалгагчийн сургалтын цахим платформ</p><form onSubmit={authenticate}>
       {mode==='register'&&<><label>Овог нэр<input required value={fullName} onChange={e=>setFullName(e.target.value)} placeholder="Овог нэр"/></label><label>Утас<input value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Утасны дугаар"/></label></>}
       <label>Имэйл<input type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="name@example.com"/></label>
       <label>Нууц үг<input type="password" minLength="6" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="Дор хаяж 6 тэмдэгт"/></label>
