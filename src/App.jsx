@@ -43,6 +43,47 @@ const [courseFile,setCourseFile] = useState(null);
     const {data:cs,error:ce} = await supabase.from('courses').select('id,title,description,file_path,created_at').order('created_at',{ascending:false});
     if(ce) setMessage('Хичээл уншихад алдаа: '+ce.message); else setCourses(cs||[]);
   }
+  async function addCourse(e) {
+  e.preventDefault();
+
+  if (!courseTitle.trim()) {
+    setMessage('Хичээлийн нэрээ оруулна уу.');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    let filePath = null;
+
+    if (courseFile) {
+      const fileName = `${Date.now()}-${courseFile.name}`;
+      const { data, error } = await supabase.storage
+        .from('training-materials')
+        .upload(fileName, courseFile);
+
+      if (error) throw error;
+      filePath = data.path;
+    }
+
+    const { error } = await supabase.from('courses').insert({
+      title: courseTitle,
+      description: courseDescription,
+      file_path: filePath
+    });
+
+    if (error) throw error;
+
+    setCourseTitle('');
+    setCourseDescription('');
+    setCourseFile(null);
+    await loadProfile();
+    setMessage('Хичээл амжилттай нэмэгдлээ.');
+  } catch (err) {
+    setMessage('Алдаа: ' + err.message);
+  } finally {
+    setLoading(false);
+  }
+}
   async function updatePassword(e) {
   e.preventDefault();
   setLoading(true);
