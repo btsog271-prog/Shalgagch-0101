@@ -56,19 +56,24 @@ export default function App() {
     setMessage('Нууц үг амжилттай шинэчлэгдлээ.');
   }
 }
-  async function authenticate(e) {
-   async function sendRecovery() {
+  async function sendRecovery() {
   if (!email) {
     setMessage('Имэйл хаягаа оруулна уу.');
     return;
   }
+
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-  redirectTo: window.location.origin
-});
+    redirectTo: window.location.origin
+  });
+
   if (error) setMessage(error.message);
   else setMessage('Нууц үг сэргээх холбоос имэйлээр илгээгдлээ.');
-} 
-    e.preventDefault(); setLoading(true); setMessage('');
+}
+
+async function authenticate(e) {
+  e.preventDefault();
+  setLoading(true);
+  setMessage('');
     try {
       if(mode==='register') {
   const {data,error} = await supabase.auth.signUp({email,password});
