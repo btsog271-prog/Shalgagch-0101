@@ -18,6 +18,9 @@ export default function App() {
   const [phone,setPhone] = useState('');
   const [message,setMessage] = useState('');
   const [courses,setCourses] = useState([]);
+  const [courseTitle,setCourseTitle] = useState('');
+const [courseDescription,setCourseDescription] = useState('');
+const [courseFile,setCourseFile] = useState(null);
   const [active,setActive] = useState('courses');
   const [loading,setLoading] = useState(false);
   const configured = Boolean(supabase);
