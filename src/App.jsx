@@ -179,8 +179,40 @@ async function openCourse(course) {
     </form> {mode==='login'&&<button type="button" className="link" onClick={sendRecovery}>Нууц үг мартсан?</button>}<button className="link" onClick={()=>{setMode(mode==='login'?'register':'login');setMessage('')}}>{mode==='login'?'Бүртгэлгүй юу? Шинээр бүртгүүлэх':'Бүртгэлтэй юу? Нэвтрэх'}</button>{message&&<p className="notice">{message}</p>}</main>:
     <><section className="welcome"><div><span className="eyebrow">ТАВТАЙ МОРИЛ</span><h1>{profile?.Full_name||session.user.email}</h1><p>Сургалтын материал, шалгалт болон үр дүнгээ эндээс хараарай.</p></div><span className="role">{profile?.role==='admin'?'АДМИН':'СУРАЛЦАГЧ'}</span></section>
     <nav><button className={active==='courses'?'selected':''} onClick={()=>setActive('courses')}><BookOpen/> Хичээлүүд</button><button className={active==='exams'?'selected':''} onClick={()=>setActive('exams')}><ClipboardCheck/> Шалгалт</button>{profile?.role==='admin'&&<button className={active==='admin'?'selected':''} onClick={()=>setActive('admin')}><Users/> Удирдлага</button>}</nav>
-    <main className="content">{active==='courses'?<><h2>Сургалтын хичээлүүд</h2>{courses.length?courses.map(c=><article className="course" key={c.id}><div className="courseicon"><BookOpen/></div><div className="grow"><h3>{c.title}</h3><p>{c.description||'Хичээлийн тайлбар'}</p></div><button className="secondary" onClick={()=>openCourse(c)}>Үзэх</button></article>):<p className="empty">Одоогоор хичээл оруулаагүй байна.</p>}</>:active==='exams'?<><h2>Шалгалт</h2><p className="empty">Идэвхтэй шалгалтууд энд харагдана. Шалгалтын интерфэйсийг дараагийн шатанд холбоно.</p></>:<><h2>Админ удирдлага</h2><p className="empty">Хичээл, асуулт, хэрэглэгчийн удирдлагын хэсгийг дараагийн шатанд нэмнэ.</p></>}</main></>}
-    <footer>© 2026 Шалгагч-0101 · Сургалтын платформ</footer>
+    <main className="content">{active==='courses'?<><h2>Сургалтын хичээлүүд</h2>{courses.length?courses.map(c=><article className="course" key={c.id}><div className="courseicon"><BookOpen/></div><div className="grow"><h3>{c.title}</h3><p>{c.description||'Хичээлийн тайлбар'}</p></div><button className="secondary" onClick={()=>openCourse(c)}>Үзэх</button></article>):<p className="empty">Одоогоор хичээл оруулаагүй байна.</p>}</>:active==='exams'?<><h2>Шалгалт</h2><p className="empty">Идэвхтэй шалгалтууд энд харагдана. Шалгалтын интерфэйсийг дараагийн шатанд холбоно.</p></>:</main></>}
+    <footer>© 2026 Шалгагч-0101 · Сургалтын платформ</footer><>
+  <h2>Админ удирдлага</h2>
+  <form onSubmit={addCourse} className="auth">
+    <h3>Шинэ хичээл нэмэх</h3>
+
+    <label>Хичээлийн нэр</label>
+    <input
+      value={courseTitle}
+      onChange={e=>setCourseTitle(e.target.value)}
+      placeholder="Хичээлийн нэр"
+      required
+    />
+
+    <label>Хичээлийн тайлбар</label>
+    <textarea
+      value={courseDescription}
+      onChange={e=>setCourseDescription(e.target.value)}
+      placeholder="Хичээлийн тайлбар"
+    />
+
+    <label>Сургалтын материал</label>
+    <input
+      type="file"
+      accept=".pdf,.ppt,.pptx,.mp4,.doc,.docx"
+      onChange={e=>setCourseFile(e.target.files[0])}
+    />
+
+    <button className="primary" disabled={loading}>
+      {loading?'Хадгалж байна...':'Хичээл хадгалах'}
+    </button>
+  </form>
+  {message&&<p className="notice">{message}</p>}
+</>
     {message&&session&&<div className="toast" onClick={()=>setMessage('')}>{message}　×</div>}
   </div>;
 }
