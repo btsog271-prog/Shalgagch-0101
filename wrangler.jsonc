@@ -1,0 +1,8 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shalgagch-0101",
+  "compatibility_date": "2026-11-07",
+  "assets": {
+    "directory": "./dist"
+  }
+}
