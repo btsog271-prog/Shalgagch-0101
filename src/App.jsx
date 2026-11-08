@@ -29,7 +29,19 @@ export default function App() {
   const [courseFile, setCourseFile] = useState(null);
   const [active, setActive] = useState('courses');
   const [loading, setLoading] = useState(false);
+  const [exams, setExams] = useState([]);
+  const [examQuestions, setExamQuestions] = useState([]);
+  const [examTitle, setExamTitle] = useState('');
+  const [examCourseId, setExamCourseId] = useState('');
+  const [examQuestionCount, setExamQuestionCount] = useState(10);
+  const [examDuration, setExamDuration] = useState(30);
 
+  const [questionText, setQuestionText] = useState('');
+  const [optionA, setOptionA] = useState('');
+  const [optionB, setOptionB] = useState('');
+  const [optionC, setOptionC] = useState('');
+  const [optionD, setOptionD] = useState('');
+  const [correctOption, setCorrectOption] = useState('A');
   const configured = Boolean(supabase);
 
   useEffect(() => {
