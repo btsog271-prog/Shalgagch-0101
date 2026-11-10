@@ -9,7 +9,12 @@ import {
   Users,
   PlusCircle,
   CheckCircle,
-  Clock
+  Clock,
+  LayoutDashboard,
+  Trash2,
+  BarChart3,
+  GraduationCap,
+  RefreshCw
 } from 'lucide-react';
 
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -33,7 +38,12 @@ export default function App() {
 
   const [courses, setCourses] = useState([]);
   const [exams, setExams] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const [active, setActive] = useState('courses');
+
+  const [studentsCount, setStudentsCount] = useState(null);
+  const [results, setResults] = useState([]);
+  const [chartPeriod, setChartPeriod] = useState('month');
 
   const [courseTitle, setCourseTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
@@ -61,8 +71,7 @@ export default function App() {
   const [examResult, setExamResult] = useState(null);
 
   const configured = Boolean(supabase);
-  const isAdmin =
-    profile?.role?.trim().toLowerCase() === 'admin';
+  const isAdmin = profile?.role?.trim().toLowerCase() === 'admin';
 
   useEffect(() => {
     if (!supabase) return;
@@ -91,6 +100,10 @@ export default function App() {
       setProfile(null);
       setCourses([]);
       setExams([]);
+      setQuestions([]);
+      setResults([]);
+      setStudentsCount(null);
+      setActive('courses');
     }
   }, [session]);
 
@@ -110,13 +123,14 @@ export default function App() {
 
       setProfile(data);
 
+      const admin = data?.role?.trim().toLowerCase() === 'admin';
+
       const { data: cs, error: ce } = await supabase
         .from('courses')
         .select('id,title,description,file_path,created_at')
         .order('created_at', { ascending: false });
 
       if (ce) throw ce;
-
       setCourses(cs || []);
 
       const { data: examData, error: examError } = await supabase
@@ -125,8 +139,42 @@ export default function App() {
         .order('created_at', { ascending: false });
 
       if (examError) throw examError;
-
       setExams(examData || []);
+
+      if (admin) {
+        const { data: questionData, error: questionError } =
+          await supabase
+            .from('exam_questions')
+            .select('id,course_id,question_text,created_at')
+            .order('created_at', { ascending: false });
+
+        if (questionError) throw questionError;
+        setQuestions(questionData || []);
+
+        const { count, error: studentError } = await supabase
+          .from('Profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'student');
+
+        if (studentError) {
+          setStudentsCount(null);
+        } else {
+          setStudentsCount(count || 0);
+        }
+
+        const { data: resultData, error: resultError } = await supabase
+          .from('exam_results')
+          .select('id,exam_id,user_id,score,total_questions,created_at')
+          .order('created_at', { ascending: false });
+
+        if (resultError) {
+          setResults([]);
+        } else {
+          setResults(resultData || []);
+        }
+
+        setActive('dashboard');
+      }
     } catch (err) {
       setMessage('Мэдээлэл уншихад алдаа: ' + err.message);
     } finally {
@@ -229,6 +277,8 @@ export default function App() {
   async function addCourse(e) {
     e.preventDefault();
 
+    if (!isAdmin) return;
+
     if (!courseTitle.trim()) {
       setMessage('Хичээлийн нэрээ оруулна уу.');
       return;
@@ -247,7 +297,6 @@ export default function App() {
           .upload(fileName, courseFile);
 
         if (error) throw error;
-
         filePath = data.path;
       }
 
@@ -291,8 +340,74 @@ export default function App() {
     }
   }
 
+  async function deleteCourse(course) {
+    if (!isAdmin) return;
+
+    const ok = window.confirm(
+      `"${course.title}" хичээлийг устгах уу?\nХэрэв шалгалт эсвэл асуулттай холбоотой бол устгахгүй.`
+    );
+
+    if (!ok) return;
+
+    setLoading(true);
+
+    try {
+      const { count: examCount, error: examCheckError } = await supabase
+        .from('exams')
+        .select('*', { count: 'exact', head: true })
+        .eq('course_id', course.id);
+
+      if (examCheckError) throw examCheckError;
+
+      const { count: questionCount, error: questionCheckError } =
+        await supabase
+          .from('exam_questions')
+          .select('*', { count: 'exact', head: true })
+          .eq('course_id', course.id);
+
+      if (questionCheckError) throw questionCheckError;
+
+      if ((examCount || 0) > 0 || (questionCount || 0) > 0) {
+        throw new Error(
+          'Энэ хичээл шалгалт эсвэл асуулттай холбоотой байна. Эхлээд холбогдох шалгалт, асуултыг шалгана уу.'
+        );
+      }
+
+      const { error } = await supabase
+        .from('courses')
+        .delete()
+        .eq('id', course.id);
+
+      if (error) throw error;
+
+      if (course.file_path) {
+        const { error: storageError } = await supabase.storage
+          .from('training-materials')
+          .remove([course.file_path]);
+
+        if (storageError) {
+          setMessage(
+            'Хичээлийн бүртгэл устлаа. Харин файл хадгалалтаас устгахад алдаа гарлаа: ' +
+            storageError.message
+          );
+          await loadProfile();
+          return;
+        }
+      }
+
+      await loadProfile();
+      setMessage('Хичээл амжилттай устгагдлаа.');
+    } catch (err) {
+      setMessage('Хичээл устгахад алдаа: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function createExam(e) {
     e.preventDefault();
+
+    if (!isAdmin) return;
 
     if (!examTitle.trim() || !examCourseId) {
       setMessage('Шалгалтын нэр болон хичээлээ сонгоно уу.');
@@ -328,8 +443,58 @@ export default function App() {
     }
   }
 
+  async function deleteExam(exam) {
+    if (!isAdmin) return;
+
+    const ok = window.confirm(
+      `"${exam.title}" шалгалтыг устгах уу?\nШалгалтын түүхтэй бол устгах боломжгүй.`
+    );
+
+    if (!ok) return;
+
+    setLoading(true);
+
+    try {
+      const { count: attemptCount, error: attemptError } = await supabase
+        .from('exam_attempts')
+        .select('*', { count: 'exact', head: true })
+        .eq('exam_id', exam.id);
+
+      if (attemptError) throw attemptError;
+
+      const { count: resultCount, error: resultError } = await supabase
+        .from('exam_results')
+        .select('*', { count: 'exact', head: true })
+        .eq('exam_id', exam.id);
+
+      if (resultError) throw resultError;
+
+      if ((attemptCount || 0) > 0 || (resultCount || 0) > 0) {
+        throw new Error(
+          'Энэ шалгалтад суралцагчийн шалгалтын түүх эсвэл дүн байна. Түүхийг хамгаалахын тулд устгах боломжгүй.'
+        );
+      }
+
+      const { error } = await supabase
+        .from('exams')
+        .delete()
+        .eq('id', exam.id);
+
+      if (error) throw error;
+
+      await loadProfile();
+      setMessage('Шалгалт амжилттай устгагдлаа.');
+    } catch (err) {
+      setMessage('Шалгалт устгахад алдаа: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function addQuestion(e) {
     e.preventDefault();
+
+    if (!isAdmin) return;
 
     if (!examCourseId || !questionText.trim()) {
       setMessage('Хичээл болон асуултаа оруулна уу.');
@@ -347,6 +512,8 @@ export default function App() {
     }
 
     setLoading(true);
+
+    let insertedQuestionId = null;
 
     try {
       const { data, error } = await supabase
@@ -366,6 +533,8 @@ export default function App() {
 
       if (error) throw error;
 
+      insertedQuestionId = data.id;
+
       const { error: keyError } = await supabase
         .from('exam_answer_keys')
         .insert({
@@ -373,7 +542,14 @@ export default function App() {
           correct_option: correctOption
         });
 
-      if (keyError) throw keyError;
+      if (keyError) {
+        await supabase
+          .from('exam_questions')
+          .delete()
+          .eq('id', insertedQuestionId);
+
+        throw keyError;
+      }
 
       setQuestionText('');
       setOptionA('');
@@ -382,9 +558,65 @@ export default function App() {
       setOptionD('');
       setCorrectOption('A');
 
+      await loadProfile();
       setMessage('Асуулт амжилттай хадгалагдлаа.');
     } catch (err) {
       setMessage('Асуулт хадгалахад алдаа: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteQuestion(question) {
+    if (!isAdmin) return;
+
+    const ok = window.confirm(
+      'Энэ асуултыг устгах уу?\nШалгалтын түүхтэй холбоотой бол устгахгүй.'
+    );
+
+    if (!ok) return;
+
+    setLoading(true);
+
+    try {
+      const { count: usedCount, error: usedError } = await supabase
+        .from('exam_attempt_questions')
+        .select('*', { count: 'exact', head: true })
+        .eq('question_id', question.id);
+
+      if (usedError) throw usedError;
+
+      const { count: answerCount, error: answerError } = await supabase
+        .from('exam_attempt_answers')
+        .select('*', { count: 'exact', head: true })
+        .eq('question_id', question.id);
+
+      if (answerError) throw answerError;
+
+      if ((usedCount || 0) > 0 || (answerCount || 0) > 0) {
+        throw new Error(
+          'Энэ асуулт өмнөх шалгалтын түүхэнд ашиглагдсан байна. Дүн, түүхийг хамгаалахын тулд устгах боломжгүй.'
+        );
+      }
+
+      const { error: keyError } = await supabase
+        .from('exam_answer_keys')
+        .delete()
+        .eq('question_id', question.id);
+
+      if (keyError) throw keyError;
+
+      const { error } = await supabase
+        .from('exam_questions')
+        .delete()
+        .eq('id', question.id);
+
+      if (error) throw error;
+
+      await loadProfile();
+      setMessage('Асуулт амжилттай устгагдлаа.');
+    } catch (err) {
+      setMessage('Асуулт устгахад алдаа: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -454,7 +686,7 @@ export default function App() {
   }
 
   async function finishExam() {
-    if (!attemptId || examFinished) return;
+    if (!attemptId || examFinished || loading) return;
 
     setLoading(true);
 
@@ -500,6 +732,81 @@ export default function App() {
       finishExam();
     }
   }, [remainingSeconds, attemptId, examFinished]);
+
+  function getChartData() {
+    const now = new Date();
+    let groups = [];
+
+    if (chartPeriod === 'month') {
+      groups = Array.from({ length: 6 }, (_, i) => {
+        const date = new Date(
+          now.getFullYear(),
+          now.getMonth() - 5 + i,
+          1
+        );
+
+        return {
+          key: `${date.getFullYear()}-${date.getMonth()}`,
+          label: `${date.getMonth() + 1} сар`,
+          count: 0
+        };
+      });
+
+      results.forEach(r => {
+        const d = new Date(r.created_at);
+        const key = `${d.getFullYear()}-${d.getMonth()}`;
+        const group = groups.find(g => g.key === key);
+        if (group) group.count++;
+      });
+    } else if (chartPeriod === 'quarter') {
+      groups = Array.from({ length: 4 }, (_, i) => {
+        const q = i + 1;
+        return {
+          key: q,
+          label: `${q}-р улирал`,
+          count: 0
+        };
+      });
+
+      results.forEach(r => {
+        const d = new Date(r.created_at);
+        if (d.getFullYear() === now.getFullYear()) {
+          const q = Math.floor(d.getMonth() / 3) + 1;
+          groups[q - 1].count++;
+        }
+      });
+    } else {
+      groups = Array.from({ length: 5 }, (_, i) => {
+        const year = now.getFullYear() - 4 + i;
+        return {
+          key: year,
+          label: `${year}`,
+          count: 0
+        };
+      });
+
+      results.forEach(r => {
+        const d = new Date(r.created_at);
+        const group = groups.find(g => g.key === d.getFullYear());
+        if (group) group.count++;
+      });
+    }
+
+    return groups;
+  }
+
+  const chartData = getChartData();
+  const chartMax = Math.max(1, ...chartData.map(x => x.count));
+
+  const averageScore = results.length
+    ? Math.round(
+        results.reduce((sum, r) => {
+          const total = Number(r.total_questions) || 0;
+          const score = Number(r.score) || 0;
+          return sum + (total > 0 ? (score / total) * 100 : 0);
+        }, 0) / results.length
+      )
+    : 0;
 
   if (!configured) {
     return (
@@ -665,6 +972,15 @@ export default function App() {
           </section>
 
           <nav>
+            {isAdmin && (
+              <button
+                className={active === 'dashboard' ? 'selected' : ''}
+                onClick={() => setActive('dashboard')}
+              >
+                <LayoutDashboard /> Dashboard
+              </button>
+            )}
+
             <button
               className={active === 'courses' ? 'selected' : ''}
               onClick={() => setActive('courses')}
@@ -690,6 +1006,150 @@ export default function App() {
           </nav>
 
           <main className="content">
+
+            {active === 'dashboard' && isAdmin && (
+              <>
+                <div className="course">
+                  <div className="grow">
+                    <h2>Удирдлагын Dashboard</h2>
+                    <p>Сургалтын платформын ерөнхий мэдээлэл</p>
+                  </div>
+                  <button
+                    className="secondary"
+                    onClick={loadProfile}
+                    disabled={loading}
+                  >
+                    <RefreshCw size={16} /> Шинэчлэх
+                  </button>
+                </div>
+
+                <div className="dashboard-grid">
+                  <article className="stat-card">
+                    <Users size={28} />
+                    <p>Нийт суралцагч</p>
+                    <h2>
+                      {studentsCount === null ? '—' : studentsCount}
+                    </h2>
+                  </article>
+
+                  <article className="stat-card">
+                    <BookOpen size={28} />
+                    <p>Нийт хичээл</p>
+                    <h2>{courses.length}</h2>
+                  </article>
+
+                  <article className="stat-card">
+                    <ClipboardCheck size={28} />
+                    <p>Нийт шалгалт</p>
+                    <h2>{exams.length}</h2>
+                  </article>
+
+                  <article className="stat-card">
+                    <GraduationCap size={28} />
+                    <p>Өгсөн шалгалт</p>
+                    <h2>{results.length}</h2>
+                  </article>
+
+                  <article className="stat-card">
+                    <BarChart3 size={28} />
+                    <p>Дундаж амжилт</p>
+                    <h2>{averageScore}%</h2>
+                  </article>
+
+                  <article className="stat-card">
+                    <BookOpen size={28} />
+                    <p>Нийт асуулт</p>
+                    <h2>{questions.length}</h2>
+                  </article>
+                </div>
+
+                <section className="auth">
+                  <h3>Сургалтын шалгалтын статистик</h3>
+                  <p>Шалгалтын дүнгийн бүртгэлийн тоо</p>
+
+                  <div className="chart-tabs">
+                    <button
+                      className={chartPeriod === 'month' ? 'selected' : ''}
+                      onClick={() => setChartPeriod('month')}
+                    >
+                      Сар
+                    </button>
+                    <button
+                      className={chartPeriod === 'quarter' ? 'selected' : ''}
+                      onClick={() => setChartPeriod('quarter')}
+                    >
+                      Улирал
+                    </button>
+                    <button
+                      className={chartPeriod === 'year' ? 'selected' : ''}
+                      onClick={() => setChartPeriod('year')}
+                    >
+                      Жил
+                    </button>
+                  </div>
+
+                  {results.length === 0 ? (
+                    <p className="empty">
+                      Одоогоор шалгалтын дүн бүртгэгдээгүй байна.
+                    </p>
+                  ) : (
+                    <div className="chart">
+                      {chartData.map(item => (
+                        <div className="chart-column" key={item.key}>
+                          <b>{item.count}</b>
+                          <div className="chart-bar-area">
+                            <div
+                              className="chart-bar"
+                              style={{
+                                height: `${Math.max(
+                                  5,
+                                  (item.count / chartMax) * 100
+                                )}%`
+                              }}
+                            />
+                          </div>
+                          <small>{item.label}</small>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+
+                <section className="auth">
+                  <h3>Сүүлийн шалгалтын үр дүн</h3>
+
+                  {results.length === 0 ? (
+                    <p className="empty">
+                      Шалгалтын үр дүн одоогоор алга байна.
+                    </p>
+                  ) : (
+                    results.slice(0, 10).map(result => {
+                      const exam = exams.find(
+                        e => String(e.id) === String(result.exam_id)
+                      );
+
+                      return (
+                        <article className="course" key={result.id}>
+                          <div className="courseicon">
+                            <CheckCircle />
+                          </div>
+                          <div className="grow">
+                            <b>{exam?.title || 'Шалгалт'}</b>
+                            <p>
+                              Оноо: {result.score} / {result.total_questions}
+                            </p>
+                            <small>
+                              {new Date(result.created_at).toLocaleDateString('mn-MN')}
+                            </small>
+                          </div>
+                        </article>
+                      );
+                    })
+                  )}
+                </section>
+              </>
+            )}
+
             {active === 'courses' && (
               <>
                 <h2>Сургалтын хичээлүүд</h2>
@@ -710,6 +1170,15 @@ export default function App() {
                       >
                         Үзэх
                       </button>
+                      {isAdmin && (
+                        <button
+                          className="danger"
+                          disabled={loading}
+                          onClick={() => deleteCourse(c)}
+                        >
+                          <Trash2 size={16} /> Устгах
+                        </button>
+                      )}
                     </article>
                   ))
                 ) : (
@@ -745,6 +1214,15 @@ export default function App() {
                         >
                           Эхлэх
                         </button>
+                        {isAdmin && (
+                          <button
+                            className="danger"
+                            disabled={loading}
+                            onClick={() => deleteExam(exam)}
+                          >
+                            <Trash2 size={16} /> Устгах
+                          </button>
+                        )}
                       </article>
                     ))
                 ) : (
@@ -931,6 +1409,41 @@ export default function App() {
                     <PlusCircle size={17} /> Асуулт хадгалах
                   </button>
                 </form>
+
+                <section className="auth">
+                  <h3>Оруулсан шалгалтын асуултууд</h3>
+
+                  {questions.length === 0 ? (
+                    <p className="empty">
+                      Одоогоор асуулт оруулаагүй байна.
+                    </p>
+                  ) : (
+                    questions.map((q, index) => {
+                      const course = courses.find(
+                        c => String(c.id) === String(q.course_id)
+                      );
+
+                      return (
+                        <article className="course" key={q.id}>
+                          <div className="courseicon">
+                            <ClipboardCheck />
+                          </div>
+                          <div className="grow">
+                            <b>{index + 1}. {q.question_text}</b>
+                            <p>{course?.title || 'Хичээл'}</p>
+                          </div>
+                          <button
+                            className="danger"
+                            disabled={loading}
+                            onClick={() => deleteQuestion(q)}
+                          >
+                            <Trash2 size={16} /> Устгах
+                          </button>
+                        </article>
+                      );
+                    })
+                  )}
+                </section>
               </>
             )}
 
@@ -982,9 +1495,7 @@ export default function App() {
                   <button
                     className="secondary"
                     disabled={questionIndex === 0}
-                    onClick={() =>
-                      setQuestionIndex(prev => prev - 1)
-                    }
+                    onClick={() => setQuestionIndex(prev => prev - 1)}
                   >
                     Өмнөх
                   </button>
@@ -992,9 +1503,7 @@ export default function App() {
                   {questionIndex < examQuestions.length - 1 ? (
                     <button
                       className="primary"
-                      onClick={() =>
-                        setQuestionIndex(prev => prev + 1)
-                      }
+                      onClick={() => setQuestionIndex(prev => prev + 1)}
                     >
                       Дараагийн
                     </button>
@@ -1064,3 +1573,125 @@ export default function App() {
   );
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 20px 0;
+}
+
+.stat-card {
+  background: #123c2b;
+  color: white;
+  border: 1px solid #c6a34a;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.stat-card p {
+  margin: 10px 0 5px;
+  color: #e8e8e8;
+}
+
+.stat-card h2 {
+  margin: 0;
+  color: #e5c45b;
+  font-size: 28px;
+}
+
+.chart-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.chart-tabs button {
+  padding: 9px 16px;
+  border: 1px solid #c6a34a;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+.chart-tabs button.selected {
+  background: #123c2b;
+  color: white;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 12px;
+  height: 220px;
+  padding: 15px 5px;
+  border-bottom: 1px solid #ccc;
+}
+
+.chart-column {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  min-width: 0;
+}
+
+.chart-bar-area {
+  height: 145px;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 65%;
+  max-width: 45px;
+  min-height: 4px;
+  background: #176b47;
+  border-radius: 7px 7px 0 0;
+}
+
+.chart-column small {
+  font-size: 11px;
+  text-align: center;
+}
+
+.danger {
+  background: #a83232;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-card {
+    padding: 13px;
+  }
+
+  .chart {
+    gap: 5px;
+  }
+
+  .chart-column small {
+    font-size: 9px;
+  }
+    }
