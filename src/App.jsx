@@ -72,7 +72,18 @@ export default function App() {
     }
   }, [session]);
 
-  async function loadProfile() {
+  async function loadProfile() 
+    const { data: examData, error: examError } = await supabase
+      .from('exams')
+      .select('id,course_id,title,question_count,duration_minutes,is_active,created_at')
+      .order('created_at', { ascending: false });
+
+    if (examError) {
+      setMessage('Шалгалт уншихад алдаа: ' + examError.message);
+    } else {
+      setExams(examData || []);
+    }
+  
     if (!session) return;
 
     const { data, error } = await supabase
