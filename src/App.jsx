@@ -1679,19 +1679,4 @@ export default function App() {
 }
 
 @media (max-width: 600px) {
-  .dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .stat-card {
-    padding: 13px;
-  }
-
-  .chart {
-    gap: 5px;
-  }
-
-  .chart-column small {
-    font-size: 9px;
-  }
     }
