@@ -110,6 +110,29 @@ async function loadProfile() {
       setExams(examData || []);
     }
 }
+
+    const { data: cs, error: ce } = await supabase
+      .from('courses')
+      .select('id,title,description,file_path,created_at')
+      .order('created_at', { ascending: false });
+
+    if (ce) {
+      setMessage('Хичээл уншихад алдаа: ' + ce.message);
+    } else {
+      setCourses(cs || []);
+    }
+
+    const { data: examData, error: examError } = await supabase
+      .from('exams')
+      .select('id,course_id,title,question_count,duration_minutes,is_active,created_at')
+      .order('created_at', { ascending: false });
+
+    if (examError) {
+      setMessage('Шалгалт уншихад алдаа: ' + examError.message);
+    } else {
+      setExams(examData || []);
+    }
+}
   
   
     if (!session) return;
