@@ -72,7 +72,33 @@ export default function App() {
     }
   }, [session]);
 
-  async function loadProfile() 
+  
+async function loadProfile() {
+    if (!session) return;
+
+    const { data, error } = await supabase
+      .from('Profiles')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+
+    if (error) {
+      setMessage('Профайл уншихад алдаа: ' + error.message);
+    }
+
+    setProfile(data);
+
+    const { data: cs, error: ce } = await supabase
+      .from('courses')
+      .select('id,title,description,file_path,created_at')
+      .order('created_at', { ascending: false });
+
+    if (ce) {
+      setMessage('Хичээл уншихад алдаа: ' + ce.message);
+    } else {
+      setCourses(cs || []);
+    }
+
     const { data: examData, error: examError } = await supabase
       .from('exams')
       .select('id,course_id,title,question_count,duration_minutes,is_active,created_at')
@@ -83,6 +109,8 @@ export default function App() {
     } else {
       setExams(examData || []);
     }
+}
+  
   
     if (!session) return;
 
