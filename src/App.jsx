@@ -1660,23 +1660,4 @@ export default function App() {
   font-size: 11px;
   text-align: center;
 }
-
-.danger {
-  background: #a83232;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 9px 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
 }
-
-.danger:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@media (max-width: 600px) {
-    }
