@@ -415,3 +415,63 @@ footer {
   .chart { gap: 5px; }
   .chart-column small { font-size: 9px; }
 }
+/* Шалгагч-0101 шинэ өнгөний загвар */
+:root {
+  color: #f4f5ef;
+  background: #0b2419;
+}
+
+body {
+  background: #0b2419;
+  color: #f4f5ef;
+}
+
+.content {
+  color: #f4f5ef;
+}
+
+.content h2,
+.course h3 {
+  color: #e8c66b;
+}
+
+.course,
+.empty {
+  background: #153b2b;
+  color: #fff;
+  border: 1px solid #b99a4d;
+}
+
+.course p,
+.empty {
+  color: #d0ded3;
+}
+
+.courseicon {
+  background: #244d38;
+  color: #e8c66b;
+}
+
+nav {
+  background: #102f21;
+  border-color: #b99a4d;
+}
+
+nav button {
+  color: #d4dfd6;
+}
+
+nav .selected {
+  color: #e8c66b;
+  border-bottom-color: #e8c66b;
+}
+
+.secondary {
+  background: #b99a4d;
+  color: #102719;
+  border-color: #e8c66b;
+}
+
+footer {
+  color: #c6d7cb;
+}
