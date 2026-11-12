@@ -1012,18 +1012,26 @@ try {
           <main className="content">
             {active==='dashboard' && isAdmin && <>
               <h2>Админы Dashboard</h2>
-              <div className="dashboard-grid">
-                <div className="stat-card"><Users/><p>Нийт суралцагч</p><h2>{studentsCount ?? '—'}</h2></div>
-  <h3>Шалгалт өгсөн суралцагчид</h3>
 
+<div className="dashboard-grid">
+  <div className="stat-card"><Users/><p>Нийт суралцагч</p><h2>{studentsCount ?? '—'}</h2></div>
+  <div className="stat-card"><BookOpen/><p>Нийт хичээл</p><h2>{courses.length}</h2></div>
+  <div className="stat-card"><ClipboardCheck/><p>Нийт шалгалт</p><h2>{exams.length}</h2></div>
+  <div className="stat-card"><GraduationCap/><p>Өгсөн шалгалт</p><h2>{results.length}</h2></div>
+  <div className="stat-card"><BarChart3/><p>Дундаж амжилт</p><h2>{averageScore}%</h2></div>
+  <div className="stat-card"><BookOpen/><p>Нийт асуулт</p><h2>{questions.length}</h2></div>
+</div>
+
+<section className="auth">
+  <h3>Шалгалт өгсөн суралцагчид</h3>
   <div style={{overflowX: 'auto'}}>
     <table style={{width: '100%', borderCollapse: 'collapse'}}>
       <thead>
         <tr>
-          <th style={{padding: '12px', textAlign: 'left'}}>№</th>
-          <th style={{padding: '12px', textAlign: 'left'}}>Овог, нэр</th>
-          <th style={{padding: '12px', textAlign: 'left'}}>Авсан дүн</th>
-          <th style={{padding: '12px', textAlign: 'left'}}>Огноо</th>
+          <th>№</th>
+          <th>Овог, нэр</th>
+          <th>Авсан дүн</th>
+          <th>Огноо</th>
         </tr>
       </thead>
       <tbody>
@@ -1037,38 +1045,25 @@ try {
 
           return (
             <tr key={r.id}>
-              <td style={{padding: '12px'}}>{index + 1}</td>
-              <td style={{padding: '12px'}}>
-                {student?.Full_name || 'Нэр тодорхойгүй'}
-              </td>
-              <td style={{padding: '12px'}}>
-                {r.score}/{r.total_questions} ({percent}%)
-              </td>
-              <td style={{padding: '12px'}}>
-                {r.created_at
-                  ? new Date(r.created_at).toLocaleDateString('mn-MN')
-                  : '—'}
-              </td>
+              <td>{index + 1}</td>
+              <td>{student?.Full_name || 'Нэр тодорхойгүй'}</td>
+              <td>{r.score}/{r.total_questions} ({percent}%)</td>
+              <td>{r.created_at
+                ? new Date(r.created_at).toLocaleDateString('mn-MN')
+                : '—'}</td>
             </tr>
           );
         })}
         {results.length === 0 && (
           <tr>
-            <td colSpan="4" style={{padding: '16px'}}>
-              Одоогоор шалгалтын дүн алга.
-            </td>
+            <td colSpan="4">Одоогоор шалгалтын дүн алга.</td>
           </tr>
         )}
       </tbody>
     </table>
   </div>
-                <div className="stat-card"><Users/><p>Нийт суралцагч</p><h2>{studentsCount ?? '—'}</h2></div>
-                <div className="stat-card"><BookOpen/><p>Нийт хичээл</p><h2>{courses.length}</h2></div>
-                <div className="stat-card"><ClipboardCheck/><p>Нийт шалгалт</p><h2>{exams.length}</h2></div>
-                <div className="stat-card"><GraduationCap/><p>Өгсөн шалгалт</p><h2>{results.length}</h2></div>
-                <div className="stat-card"><BarChart3/><p>Дундаж амжилт</p><h2>{averageScore}%</h2></div>
-                <div className="stat-card"><BookOpen/><p>Нийт асуулт</p><h2>{questions.length}</h2></div>
-              </div>
+</section>
+              
 
               <section className="auth">
                 <h3>🏆 Шилдэг суралцагчид</h3>
