@@ -1073,7 +1073,7 @@ try {
   padding:'24px',
   boxSizing:'border-box'
 }}>
-  <h3 style={{color:'#f2d47d'}}> 
+
 <section className="auth" style={{
   background:'#153b2b',
   color:'#ffffff',
@@ -1083,10 +1083,9 @@ try {
   padding:'24px',
   boxSizing:'border-box'
 }}>
-  < style={{color:'#f2d47d'}}>
+  <h3 style={{color:'#f2d47d'}}>
     Сургалтын өсөлт, бууралтын график
   </h3>
-
   <div className="chart-tabs">
     <button className={chartPeriod==='month'?'selected':''} onClick={()=>setChartPeriod('month')}>Сар</button>
     <button className={chartPeriod==='quarter'?'selected':''} onClick={()=>setChartPeriod('quarter')}>Улирал</button>
