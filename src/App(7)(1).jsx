@@ -1118,6 +1118,39 @@ try {
         <small style={{color:'#e0e8df'}}>{item.label}</small>
       </div>
     ))}
+
+ 
+<section className="auth" style={{
+  background:'#153b2b',
+  color:'#ffffff',
+  border:'1px solid #b99a4d',
+  width:'100%',
+  maxWidth:'100%',
+  padding:'24px',
+  boxSizing:'border-box'
+}}>
+  <h3 style={{color:'#f2d47d'}}>
+    Сургалтын өсөлт, бууралтын график
+  </h3>
+
+  <div className="chart-tabs">
+    <button className={chartPeriod==='month'?'selected':''} onClick={()=>setChartPeriod('month')}>Сар</button>
+    <button className={chartPeriod==='quarter'?'selected':''} onClick={()=>setChartPeriod('quarter')}>Улирал</button>
+    <button className={chartPeriod==='year'?'selected':''} onClick={()=>setChartPeriod('year')}>Жил</button>
+  </div>
+
+  <div className="chart">
+    {chartData.map(item=>(
+      <div className="chart-column" key={item.key}>
+        <b style={{color:'#f2d47d'}}>{item.count}</b>
+        <div className="chart-bar-area">
+          <div className="chart-bar" style={{
+            height:`${Math.max(5,item.count/chartMax*100)}%`
+          }}/>
+        </div>
+        <small style={{color:'#e0e8df'}}>{item.label}</small>
+      </div>
+    ))}
   </div>
 </section>
 
@@ -1158,7 +1191,7 @@ try {
     <p style={{color:'#e0e8df'}}>Шалгалтын үр дүн одоогоор алга.</p>
   )}
 </section>
-              <section className="auth">
+    <section className="auth">
                 <h3>🎓 Гэрчилгээ ({certificates.length})</h3>
                 {certificates.map(cert=><article className="course" key={cert.id}>
                   <div className="grow"><b>{cert.student_name}</b><p>{cert.certificate_no} · {cert.average_score}%</p></div>
