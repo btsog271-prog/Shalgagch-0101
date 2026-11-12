@@ -1012,7 +1012,56 @@ try {
           <main className="content">
             {active==='dashboard' && isAdmin && <>
               <h2>Админы Dashboard</h2>
-              <div className="dashboard-grid">
+              <div<section className="student-panel" style={{marginTop: '24px'}}>
+  <h3>Шалгалт өгсөн суралцагчид</h3>
+
+  <div style={{overflowX: 'auto'}}>
+    <table style={{width: '100%', borderCollapse: 'collapse'}}>
+      <thead>
+        <tr>
+          <th style={{padding: '12px', textAlign: 'left'}}>№</th>
+          <th style={{padding: '12px', textAlign: 'left'}}>Овог, нэр</th>
+          <th style={{padding: '12px', textAlign: 'left'}}>Авсан дүн</th>
+          <th style={{padding: '12px', textAlign: 'left'}}>Огноо</th>
+        </tr>
+      </thead>
+      <tbody>
+        {results.map((r, index) => {
+          const student = students.find(
+            s => s.user_id === r.user_id
+          );
+          const percent = r.total_questions
+            ? Math.round(r.score / r.total_questions * 100)
+            : 0;
+
+          return (
+            <tr key={r.id}>
+              <td style={{padding: '12px'}}>{index + 1}</td>
+              <td style={{padding: '12px'}}>
+                {student?.Full_name || 'Нэр тодорхойгүй'}
+              </td>
+              <td style={{padding: '12px'}}>
+                {r.score}/{r.total_questions} ({percent}%)
+              </td>
+              <td style={{padding: '12px'}}>
+                {r.created_at
+                  ? new Date(r.created_at).toLocaleDateString('mn-MN')
+                  : '—'}
+              </td>
+            </tr>
+          );
+        })}
+        {results.length === 0 && (
+          <tr>
+            <td colSpan="4" style={{padding: '16px'}}>
+              Одоогоор шалгалтын дүн алга.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</section> className="dashboard-grid">
                 <div className="stat-card"><Users/><p>Нийт суралцагч</p><h2>{studentsCount ?? '—'}</h2></div>
                 <div className="stat-card"><BookOpen/><p>Нийт хичээл</p><h2>{courses.length}</h2></div>
                 <div className="stat-card"><ClipboardCheck/><p>Нийт шалгалт</p><h2>{exams.length}</h2></div>
