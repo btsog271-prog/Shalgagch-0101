@@ -1013,7 +1013,7 @@ try {
             {active==='dashboard' && isAdmin && <>
               <h2>Админы Dashboard</h2>
               <div className="dashboard-grid">
-                
+                <div className="stat-card"><Users/><p>Нийт суралцагч</p><h2>{studentsCount ?? '—'}</h2></div>
   <h3>Шалгалт өгсөн суралцагчид</h3>
 
   <div style={{overflowX: 'auto'}}>
