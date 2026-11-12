@@ -1021,7 +1021,52 @@ try {
   <div className="stat-card"><BarChart3/><p>Дундаж амжилт</p><h2>{averageScore}%</h2></div>
   <div className="stat-card"><BookOpen/><p>Нийт асуулт</p><h2>{questions.length}</h2></div>
 </div>
+<section className="auth" style={{
+  background:'#153b2b',
+  color:'#ffffff',
+  border:'1px solid #b99a4d',
+  width:'100%',
+  maxWidth:'100%',
+  padding:'24px',
+  boxSizing:'border-box'
+}}>
+  <h3 style={{color:'#f2d47d'}}>🏆 Шилдэг суралцагчид</h3>
 
+  {leaderboard.length > 0 ? leaderboard.map((student,index)=>{
+    const hasCertificate = certificates.some(
+      c => c.user_id === student.user_id
+    );
+
+    return (
+      <article className="course" key={student.user_id} style={{
+        background:'#1b4934',
+        color:'#ffffff',
+        border:'1px solid #b99a4d'
+      }}>
+        <div className="grow">
+          <b style={{color:'#f2d47d'}}>
+            {index + 1}. {student.Full_name || 'Нэр тодорхойгүй'}
+          </b>
+          <p style={{color:'#e0e8df'}}>
+            Дундаж амжилт: {student.average}% · Шалгалт: {student.examCount}
+          </p>
+        </div>
+
+        <button
+          className="secondary"
+          disabled={loading || hasCertificate}
+          onClick={()=>issueCertificate(student)}
+        >
+          {hasCertificate ? 'Олгосон' : 'Гэрчилгээ олгох'}
+        </button>
+      </article>
+    );
+  }) : (
+    <p style={{color:'#e0e8df'}}>
+      Шалгалтын дүн бүртгэгдсэний дараа шилдэг суралцагчид харагдана.
+    </p>
+  )}
+</section>
 <section className="auth">
   <h3>Шалгалт өгсөн суралцагчид</h3>
   <div style={{overflowX: 'auto'}}>
