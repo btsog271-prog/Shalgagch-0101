@@ -664,22 +664,85 @@ footer {
   color: #153b2b !important;
 }
 
-/* Шилдэг суралцагчид - засвар */
-.content section.auth article.course {
-  background: #1b4934 !important;
-  color: #ffffff !important;
-  border: 1px solid #b99a4d !important;
-}
+<section
+  className="auth"
+  style={{
+    background: '#153b2b',
+    color: '#ffffff',
+    border: '1px solid #b99a4d',
+    padding: '24px',
+    borderRadius: '16px',
+    width: '100%',
+    maxWidth: '100%',
+    boxSizing: 'border-box'
+  }}
+>
+  <h3 style={{
+    color: '#f2d47d',
+    marginBottom: '20px'
+  }}>
+    🏆 Шилдэг суралцагчид
+  </h3>
 
-.content section.auth article.course b {
-  color: #f2d47d !important;
-}
+  {leaderboard.length > 0 ? (
+    leaderboard.map((student, index) => {
+      const hasCertificate = certificates.some(
+        c => c.user_id === student.user_id
+      );
 
-.content section.auth article.course p {
-  color: #e0e8df !important;
-}
+      return (
+        <article
+          className="course"
+          key={student.user_id}
+          style={{
+            background: '#1b4934',
+            color: '#ffffff',
+            border: '1px solid #b99a4d',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '12px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '12px',
+            flexWrap: 'wrap'
+          }}
+        >
+          <div className="grow">
+            <b style={{ color: '#f2d47d' }}>
+              {index + 1}. {student.Full_name}
+            </b>
 
-.content section.auth article.course button {
-  color: #102719 !important;
-  background: #b99a4d !important;
-}
+            <p style={{
+              color: '#e0e8df',
+              marginTop: '8px'
+            }}>
+              Дундаж: {student.average}%
+              {' · '}
+              Шалгалт: {student.examCount}
+            </p>
+          </div>
+
+          <button
+            className="secondary"
+            style={{
+              background: '#b99a4d',
+              color: '#102719',
+              border: 'none',
+              fontWeight: 'bold'
+            }}
+            disabled={loading || hasCertificate}
+            onClick={() => issueCertificate(student)}
+          >
+            {hasCertificate ? 'Олгосон' : 'Гэрчилгээ олгох'}
+          </button>
+        </article>
+      );
+    })
+  ) : (
+    <p style={{ color: '#e0e8df' }}>
+      Шалгалтын дүн бүртгэгдсэний дараа шилдэг суралцагчид харагдана.
+    </p>
+  )}
+</section>
+              
