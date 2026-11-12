@@ -1073,53 +1073,7 @@ try {
   padding:'24px',
   boxSizing:'border-box'
 }}>
-  <h3 style={{color:'#f2d47d'}}>
-    Сургалтын өсөлт, бууралтын график
-  </h3>
-  {results.slice(0,10).map(result=>(
-    <article className="course" key={result.id} style={{
-      background:'#1b4934',
-      color:'#ffffff',
-      border:'1px solid #b99a4d'
-    }}>
-      <div className="grow">
-        <b style={{color:'#f2d47d'}}>
-          {exams.find(e=>String(e.id)===String(result.exam_id))?.title || 'Шалгалт'}
-        </b>
-        <p style={{color:'#e0e8df'}}>
-          Оноо: {result.score}/{result.total_questions}
-        </p>
-      </div>
-      <small style={{color:'#e0e8df'}}>
-        {new Date(result.created_at).toLocaleDateString('mn-MN')}
-      </small>
-    </article>
-  ))}
-
-  {results.length === 0 && (
-    <p style={{color:'#e0e8df'}}>Шалгалтын үр дүн одоогоор алга.</p>
-  )}
-</section>
-  <div className="chart-tabs">
-    <button className={chartPeriod==='month'?'selected':''} onClick={()=>setChartPeriod('month')}>Сар</button>
-    <button className={chartPeriod==='quarter'?'selected':''} onClick={()=>setChartPeriod('quarter')}>Улирал</button>
-    <button className={chartPeriod==='year'?'selected':''} onClick={()=>setChartPeriod('year')}>Жил</button>
-  </div>
-
-  <div className="chart">
-    {chartData.map(item=>(
-      <div className="chart-column" key={item.key}>
-        <b style={{color:'#f2d47d'}}>{item.count}</b>
-        <div className="chart-bar-area">
-          <div className="chart-bar" style={{
-            height:`${Math.max(5,item.count/chartMax*100)}%`
-          }}/>
-        </div>
-        <small style={{color:'#e0e8df'}}>{item.label}</small>
-      </div>
-    ))}
-
- 
+  <h3 style={{color:'#f2d47d'}}> 
 <section className="auth" style={{
   background:'#153b2b',
   color:'#ffffff',
@@ -1129,7 +1083,7 @@ try {
   padding:'24px',
   boxSizing:'border-box'
 }}>
-  <h3 style={{color:'#f2d47d'}}>
+  < style={{color:'#f2d47d'}}>
     Сургалтын өсөлт, бууралтын график
   </h3>
 
@@ -1153,7 +1107,6 @@ try {
     ))}
   </div>
 </section>
-
 <section className="auth" style={{
   background:'#153b2b',
   color:'#ffffff',
