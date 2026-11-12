@@ -664,17 +664,22 @@ footer {
   color: #153b2b !important;
 }
 
-/* Шилдэг суралцагчдын бичгийн өнгө */
-.auth article.course {
-  color: #173b2b !important;
-  background: #ffffff;
+/* Шилдэг суралцагчид - засвар */
+.content section.auth article.course {
+  background: #1b4934 !important;
+  color: #ffffff !important;
+  border: 1px solid #b99a4d !important;
 }
 
-.auth article.course b,
-.auth article.course p {
-  color: #173b2b !important;
+.content section.auth article.course b {
+  color: #f2d47d !important;
 }
 
-.auth article.course button {
-  color: #ffffff;
+.content section.auth article.course p {
+  color: #e0e8df !important;
+}
+
+.content section.auth article.course button {
+  color: #102719 !important;
+  background: #b99a4d !important;
 }
