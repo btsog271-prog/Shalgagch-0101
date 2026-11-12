@@ -1012,7 +1012,8 @@ try {
           <main className="content">
             {active==='dashboard' && isAdmin && <>
               <h2>Админы Dashboard</h2>
-              <div<section className="student-panel" style={{marginTop: '24px'}}>
+              <div className="dashboard-grid">
+                <section className="student-panel" style={{marginTop: '24px'}}>
   <h3>Шалгалт өгсөн суралцагчид</h3>
 
   <div style={{overflowX: 'auto'}}>
