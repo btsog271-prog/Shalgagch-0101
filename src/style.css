@@ -553,3 +553,25 @@ footer {
 .course p {
   color: #e0e8df !important;
 }
+/* Админ удирдлагын ногоон загвар */
+.content form.auth,
+.content section.auth {
+  background: #153b2b !important;
+  color: #f4f5ef !important;
+  border: 1px solid #b99a4d;
+}
+
+.content form.auth h3,
+.content section.auth h3 {
+  color: #f2d47d !important;
+}
+
+.content form.auth label,
+.content section.auth label {
+  color: #e8c66b !important;
+}
+
+.content form.auth p,
+.content section.auth p {
+  color: #e0e8df !important;
+}
