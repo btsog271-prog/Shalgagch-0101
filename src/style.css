@@ -691,3 +691,21 @@ footer {
 .content section.auth article.course p {
   color: #e0e8df !important;
 }
+.student-lower-grid > .student-panel:first-child {
+  background: #153b2b !important;
+  background-color: #153b2b !important;
+  color: #ffffff !important;
+  border: 1px solid #b99a4d !important;
+  border-radius: 14px !important;
+}
+
+.student-lower-grid > .student-panel:first-child h3 {
+  color: #f2d47d !important;
+}
+
+.student-lower-grid > .student-panel:first-child .student-result-row,
+.student-lower-grid > .student-panel:first-child .student-result-row span,
+.student-lower-grid > .student-panel:first-child .student-result-row small,
+.student-lower-grid > .student-panel:first-child .empty {
+  color: #ffffff !important;
+}
