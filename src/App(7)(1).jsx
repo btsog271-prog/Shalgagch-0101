@@ -1205,7 +1205,14 @@ try {
                 </article>)}
               </div>
               <div className="student-lower-grid">
-                <section className="student-panel"><h3>Миний шалгалтын түүх</h3>
+              <section className="student-panel" style={{
+  background:'#153b2b',
+  color:'#ffffff',
+  border:'1px solid #b99a4d',
+  borderRadius:'14px',
+  padding:'20px'
+}}>
+  <h3 style={{color:'#f2d47d'}}>Миний шалгалтын түүх</h3>  
                   {results.map(r=><div className="student-result-row" key={r.id}><span>{r.score}/{r.total_questions}</span><small>{new Date(r.created_at).toLocaleDateString('mn-MN')}</small></div>)}
                   {!results.length && <p className="empty">Шалгалтын дүн одоогоор алга байна.</p>}
                 </section>
