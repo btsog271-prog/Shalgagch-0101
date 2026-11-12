@@ -1076,7 +1076,30 @@ try {
   <h3 style={{color:'#f2d47d'}}>
     Сургалтын өсөлт, бууралтын график
   </h3>
+  {results.slice(0,10).map(result=>(
+    <article className="course" key={result.id} style={{
+      background:'#1b4934',
+      color:'#ffffff',
+      border:'1px solid #b99a4d'
+    }}>
+      <div className="grow">
+        <b style={{color:'#f2d47d'}}>
+          {exams.find(e=>String(e.id)===String(result.exam_id))?.title || 'Шалгалт'}
+        </b>
+        <p style={{color:'#e0e8df'}}>
+          Оноо: {result.score}/{result.total_questions}
+        </p>
+      </div>
+      <small style={{color:'#e0e8df'}}>
+        {new Date(result.created_at).toLocaleDateString('mn-MN')}
+      </small>
+    </article>
+  ))}
 
+  {results.length === 0 && (
+    <p style={{color:'#e0e8df'}}>Шалгалтын үр дүн одоогоор алга.</p>
+  )}
+</section>
   <div className="chart-tabs">
     <button className={chartPeriod==='month'?'selected':''} onClick={()=>setChartPeriod('month')}>Сар</button>
     <button className={chartPeriod==='quarter'?'selected':''} onClick={()=>setChartPeriod('quarter')}>Улирал</button>
