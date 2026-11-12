@@ -1013,7 +1013,7 @@ try {
             {active==='dashboard' && isAdmin && <>
               <h2>Админы Dashboard</h2>
               <div className="dashboard-grid">
-                <section className="student-panel" style={{marginTop: '24px'}}>
+                
   <h3>Шалгалт өгсөн суралцагчид</h3>
 
   <div style={{overflowX: 'auto'}}>
@@ -1062,7 +1062,6 @@ try {
       </tbody>
     </table>
   </div>
-</section> className="dashboard-grid">
                 <div className="stat-card"><Users/><p>Нийт суралцагч</p><h2>{studentsCount ?? '—'}</h2></div>
                 <div className="stat-card"><BookOpen/><p>Нийт хичээл</p><h2>{courses.length}</h2></div>
                 <div className="stat-card"><ClipboardCheck/><p>Нийт шалгалт</p><h2>{exams.length}</h2></div>
