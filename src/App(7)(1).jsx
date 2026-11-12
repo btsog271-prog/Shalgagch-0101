@@ -1063,17 +1063,6 @@ try {
     </table>
   </div>
 </section>
-
-<section className="auth" style={{
-  background:'#153b2b',
-  color:'#ffffff',
-  border:'1px solid #b99a4d',
-  width:'100%',
-  maxWidth:'100%',
-  padding:'24px',
-  boxSizing:'border-box'
-}}>
-
 <section className="auth" style={{
   background:'#153b2b',
   color:'#ffffff',
