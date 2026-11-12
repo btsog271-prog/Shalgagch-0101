@@ -979,7 +979,7 @@ try {
             <img src={siteSettings.logo_url || officialLogo} alt="0101 эмблем" style={{width:90,height:90,objectFit:'contain'}}/>
           </div>
           <h1>{mode==='login'?'Системд нэвтрэх':'Шинэ хэрэглэгчийн бүртгэл'}</h1>
-          <p>Хилийн шалгагчийн сургалтын цахим платформ</p>
+          <p>Хилчин шалгагчийн сургалтын цахим платформ</p>
           <form onSubmit={authenticate}>
             {mode==='register' && <>
               <label>Овог нэр<input required value={fullName} onChange={e=>setFullName(e.target.value)} placeholder="Овог нэр"/></label>
