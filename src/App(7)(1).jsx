@@ -1115,7 +1115,7 @@ try {
 
             {active==='dashboard' && !isAdmin && <div className="student-home">
               <section className="student-hero" style={siteSettings.banner_url?{backgroundImage:`linear-gradient(110deg,rgba(3,39,27,.9),rgba(9,75,49,.7)),url("${siteSettings.banner_url}")`,backgroundSize:'cover',backgroundPosition:'center'}:undefined}>
-                <span>ХИЛИЙН АЛБАНЫ ЦАХИМ СУРГАЛТЫН ПЛАТФОРМ</span>
+                <span>ХИЛЧИН ШАЛГАГЧИЙН ЦАХИМ СУРГАЛТЫН ПЛАТФОРМ</span>
                 <h1>{siteSettings.hero_title}</h1><h2>{siteSettings.hero_subtitle}</h2><p>{siteSettings.hero_description}</p>
                 <button className="primary" onClick={()=>setActive('courses')}>Сургалт эхлэх</button>
               </section>
