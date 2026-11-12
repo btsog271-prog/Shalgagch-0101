@@ -140,7 +140,11 @@ if (!course.image_path) return { ...course, image_url: '' };
 const { data: imageData } = await supabase.storage.from('site-assets').getPublicUrl(course.image_path);
 return { ...course, image_url: imageData?.publicUrl || '' };
 }));
-setCourses(coursesWithImages);
+setCourses(
+  [...coursesWithImages].sort(
+    (a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999)
+  )
+);
 const { data: settingsRows, error: settingsError } = await supabase
 .from('site_settings')
 .select('setting_key,setting_value');
