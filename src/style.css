@@ -612,3 +612,54 @@ footer {
 .content:has(.dashboard-grid) section.auth h3 {
   color: #f2d47d !important;
 }
+/* Суралцагчийн Dashboard-ийн фон */
+.student-home {
+  background: transparent !important;
+}
+
+.student-hero,
+.student-panel,
+.student-course-card {
+  background-color: #153b2b !important;
+  color: #f4f5ef !important;
+  border: 1px solid #b99a4d !important;
+  border-radius: 14px;
+}
+
+.student-home h2,
+.student-home h3,
+.student-home strong,
+.student-home b {
+  color: #f2d47d !important;
+}
+
+.student-home p,
+.student-home span,
+.student-home small {
+  color: #e0e8df;
+}
+
+.student-course-body {
+  background: #153b2b !important;
+  color: #f4f5ef !important;
+}
+
+.student-result-row {
+  background: #1b4934 !important;
+  color: #f4f5ef !important;
+  border-bottom: 1px solid #b99a4d;
+}
+
+.student-profile-panel {
+  background: #153b2b !important;
+  border: 1px solid #b99a4d !important;
+}
+
+.student-overview {
+  background: transparent !important;
+}
+
+.student-avatar {
+  background: #b99a4d !important;
+  color: #153b2b !important;
+}
