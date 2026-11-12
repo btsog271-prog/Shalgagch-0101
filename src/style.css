@@ -663,3 +663,18 @@ footer {
   background: #b99a4d !important;
   color: #153b2b !important;
 }
+
+/* Шилдэг суралцагчдын бичгийн өнгө */
+.auth article.course {
+  color: #173b2b !important;
+  background: #ffffff;
+}
+
+.auth article.course b,
+.auth article.course p {
+  color: #173b2b !important;
+}
+
+.auth article.course button {
+  color: #ffffff;
+}
