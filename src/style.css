@@ -508,3 +508,25 @@ select {
 footer {
   color: #c6d7cb;
 }
+/* Dashboard-ийн гарчиг, текстийн өнгө */
+.dashboard h1,
+.dashboard h2,
+.dashboard h3,
+.dashboard h4,
+.dashboard p,
+.dashboard span,
+.dashboard strong {
+  color: #e8c66b;
+}
+
+/* Dashboard-ийн үндсэн гарчиг */
+.dashboard h1,
+.dashboard h2 {
+  color: #f2d47d;
+  font-weight: 800;
+}
+
+/* Dashboard-ийн тайлбар текст */
+.dashboard p {
+  color: #e0e8df;
+}
