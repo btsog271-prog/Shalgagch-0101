@@ -465,6 +465,39 @@ nav .selected {
   color: #e8c66b;
   border-bottom-color: #e8c66b;
 }
+/* Үндсэн дэлгэцийн фоныг сэргээх */
+html,
+body,
+#root,
+.app {
+  min-height: 100vh;
+  background: #0b2419 !important;
+  color: #f4f5ef;
+}
+
+main,
+.content,
+.dashboard,
+section {
+  background-color: transparent;
+}
+
+.auth,
+.setup {
+  background: #153b2b;
+  color: #fff;
+}
+
+label {
+  color: #e8c66b;
+}
+
+input,
+textarea,
+select {
+  background: #f8faf8;
+  color: #17251d;
+}
 
 .secondary {
   background: #b99a4d;
