@@ -575,3 +575,40 @@ footer {
 .content section.auth p {
   color: #e0e8df !important;
 }
+/* Админы Dashboard загвар */
+.content:has(.dashboard-grid) {
+  background: transparent !important;
+}
+
+.content:has(.dashboard-grid) > h2 {
+  color: #f2d47d !important;
+  font-weight: 800;
+}
+
+.dashboard-grid {
+  background: transparent !important;
+}
+
+.stat-card {
+  background: #153b2b !important;
+  color: #f2d47d !important;
+  border: 1px solid #c6a34a !important;
+}
+
+.stat-card p {
+  color: #e0e8df !important;
+}
+
+.stat-card h2 {
+  color: #f2d47d !important;
+}
+
+.content:has(.dashboard-grid) section.auth {
+  background: #153b2b !important;
+  color: #fff !important;
+  border: 1px solid #b99a4d !important;
+}
+
+.content:has(.dashboard-grid) section.auth h3 {
+  color: #f2d47d !important;
+}
