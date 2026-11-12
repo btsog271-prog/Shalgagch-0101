@@ -530,3 +530,26 @@ footer {
 .dashboard p {
   color: #e0e8df;
 }
+/* Сургалтын хэсгийн ногоон загвар */
+.content {
+  background: transparent !important;
+}
+
+.content > h2 {
+  color: #e8c66b !important;
+}
+
+.course {
+  background: #153b2b !important;
+  color: #ffffff !important;
+  border: 1px solid #b99a4d !important;
+}
+
+.course h3,
+.course b {
+  color: #f2d47d !important;
+}
+
+.course p {
+  color: #e0e8df !important;
+}
